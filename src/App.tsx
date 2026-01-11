@@ -1,11 +1,12 @@
-import { RouterProvider } from "react-router-dom"
-import route from "./routes"
+import { Outlet } from "react-router-dom"
+import Navbar from "./components/Navbar"
 
 function App() {
   return (
-    <>
-      <RouterProvider router={route} />
-    </>
+    <div className="hero-bg pt-5">
+      <Navbar />
+      <Outlet />
+    </div>
   )
 }
 
