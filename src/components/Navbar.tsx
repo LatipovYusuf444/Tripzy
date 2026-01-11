@@ -1,33 +1,193 @@
+import { useEffect, useState } from "react"
+import { Link, NavLink } from "react-router-dom"
+import { motion, AnimatePresence } from "framer-motion"
+import { Menu, X } from "lucide-react"
 import logo from "@/assets/images/Tripzy.webp"
-import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
-const Navbar = () => {
-  return (
-    <div className="container
-  bg-white/2 backdrop-blur-xl border border-white/20
-  shadow-lg shadow-black/30
-  mx-auto w-350 rounded-4xl flex justify-center items-center gap-50  ">
-      <img className="h-26 w-38 -ml-13" src={logo} alt="" />
-      <div className="flex justify-center items-center gap-20 fonts text-white font-bold">
-        <Link to={'/about'}>
-          Biz haqimizda
-        </Link>
-        <Link to={'/'}>
-          Xizmatlarimiz
-        </Link>
-        <Link to={'/'}>
-          Reyslar
-        </Link>
-        <Link to={'/'}>
-          Contact
-        </Link>
-      </div>
-      <Button className="fonts text-white bg-blue-300 rounded-3xl px-14 py-6 cursor-pointer">
-        Register
-      </Button>
-    </div>
-  )
+
+const navLinks = [
+  { to: "/about", label: "Biz haqimizda" },
+  { to: "/services", label: "Xizmatlarimiz" },
+  { to: "/flights", label: "Reyslar" },
+  { to: "/contact", label: "Contact" },
+]
+
+const menuVariants = {
+  closed: { opacity: 0, y: -12, scale: 0.98 },
+  open: { opacity: 1, y: 0, scale: 1 },
 }
 
-export default Navbar
+const listVariants = {
+  closed: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+  open: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
+}
 
+const itemVariants = {
+  closed: { opacity: 0, y: -8, filter: "blur(6px)" },
+  open: { opacity: 1, y: 0, filter: "blur(0px)" },
+}
+
+export default function Navbar() {
+  const [open, setOpen] = useState(false)
+
+  // ESC bosilsa yopilsin
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
+
+  // Menu ochilganda scroll lock
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [open])
+
+  return (
+    <header className="w-full flex justify-center pt-5 px-4">
+      <motion.nav
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className="
+          relative overflow-hidden
+          w-full max-w-[1200px]
+          rounded-2xl sm:rounded-full
+          px-4 sm:px-6 py-3
+          bg-white/10 backdrop-blur-xl
+          border border-white/20
+          shadow-lg shadow-black/30
+        "
+      >
+        {/* ✨ Shine effect */}
+        <motion.div
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
+          initial={{ x: "-140%" }}
+          animate={{ x: "140%" }}
+          transition={{ repeat: Infinity, duration: 7, ease: "linear" }}
+        />
+
+        <div className="relative z-10 flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+            <img src={logo} alt="Tripzy" className="h-10 sm:h-11 w-auto" />
+          </Link>
+
+          {/* Desktop links */}
+          <div className="hidden md:flex items-center gap-8 fonts font-semibold text-white">
+            {navLinks.map((l) => (
+              <NavLink
+                key={l.to}
+                to={l.to}
+                className={({ isActive }) =>
+                  `
+                  transition hover:text-blue-200
+                  ${isActive ? "text-blue-200" : "text-white/90"}
+                  `
+                }
+              >
+                {l.label}
+              </NavLink>
+            ))}
+          </div>
+
+          {/* Desktop button */}
+          <div className="hidden md:block">
+            <Button className="rounded-full bg-white/20 text-white border border-white/25 hover:bg-white/30 px-6">
+              Register
+            </Button>
+          </div>
+
+          {/* Mobile burger */}
+          <button
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setOpen((p) => !p)}
+            className="
+              md:hidden
+              inline-flex items-center justify-center
+              rounded-xl
+              border border-white/20
+              bg-white/10
+              text-white
+              w-10 h-10
+              hover:bg-white/20
+              transition
+            "
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
+
+        {/* Mobile dropdown */}
+        <AnimatePresence>
+          {open && (
+            <>
+              {/* Backdrop */}
+              <motion.button
+                type="button"
+                aria-label="Close menu backdrop"
+                className="fixed inset-0 bg-black/40 md:hidden"
+                onClick={() => setOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              />
+
+              {/* Menu panel */}
+              <motion.div
+                className="
+                  md:hidden
+                  relative z-[60]
+                  mt-3
+                  rounded-2xl
+                  bg-[#0A1220]/75 backdrop-blur-xl
+                  border border-white/15
+                  p-3
+                "
+                variants={menuVariants}
+                initial="closed"
+                animate="open"
+                exit="closed"
+                transition={{ duration: 0.22, ease: "easeOut" }}
+              >
+                <motion.div variants={listVariants} initial="closed" animate="open" exit="closed" className="flex flex-col">
+                  {navLinks.map((l) => (
+                    <motion.div key={l.to} variants={itemVariants}>
+                      <NavLink
+                        to={l.to}
+                        onClick={() => setOpen(false)}
+                        className={({ isActive }) =>
+                          `
+                          block px-4 py-3 rounded-xl fonts font-semibold
+                          ${isActive ? "bg-white/10 text-blue-200" : "text-white/90 hover:bg-white/10"}
+                          transition
+                          `
+                        }
+                      >
+                        {l.label}
+                      </NavLink>
+                    </motion.div>
+                  ))}
+
+                  <motion.div variants={itemVariants} className="pt-2">
+                    <Button
+                      onClick={() => setOpen(false)}
+                      className="w-full rounded-xl bg-blue-400 text-white hover:opacity-90 py-6"
+                    >
+                      Register
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+      </motion.nav>
+    </header>
+  )
+}

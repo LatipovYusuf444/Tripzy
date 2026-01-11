@@ -1,21 +1,17 @@
-import { createBrowserRouter } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import HomeTop from "./pages/Home/HomeTop";
-import About from "./pages/About";
+import { createBrowserRouter } from "react-router-dom"
+import App from "./App"
+import HomeTop from "./pages/Home/HomeTop"
+import About from "./pages/About"
 
 const route = createBrowserRouter([
   {
-    element: <Navbar />,
-    path: "/"
-  },
-  {
-    element: <HomeTop/>,
-    path: "/"
-  },
-  {
-    element: <About/>,
-    path: "/about"
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <HomeTop /> },   // "/"
+      { path: "about", element: <About /> },   // "/about"
+    ],
   },
 ])
 
-export default route;
+export default route

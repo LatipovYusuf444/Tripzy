@@ -11,6 +11,11 @@ background: linear-gradient(to right, #313b54, #1a5779, #1f5f82, #667db6); /* W3
 .fonts {
   font-family: "Google Sans"
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
 .hero-bg {
   background-image: url("/src/assets/images/12904.jpg");
   background-size: cover;
