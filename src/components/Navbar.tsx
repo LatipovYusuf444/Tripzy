@@ -30,7 +30,6 @@ const itemVariants = {
 export default function Navbar() {
   const [open, setOpen] = useState(false)
 
-  // ESC bosilsa yopilsin
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false)
@@ -39,7 +38,6 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey)
   }, [])
 
-  // Menu ochilganda scroll lock
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : ""
     return () => {
@@ -63,7 +61,6 @@ export default function Navbar() {
           shadow-lg shadow-black/30
         "
       >
-        {/* ✨ Shine effect */}
         <motion.div
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent"
           initial={{ x: "-140%" }}
@@ -72,12 +69,10 @@ export default function Navbar() {
         />
 
         <div className="relative z-10 flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
             <img src={logo} alt="Tripzy" className="h-10 sm:h-11 w-auto" />
           </Link>
 
-          {/* Desktop links */}
           <div className="hidden md:flex items-center gap-8 fonts font-semibold text-white">
             {navLinks.map((l) => (
               <NavLink
@@ -95,14 +90,12 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop button */}
           <div className="hidden md:block">
             <Button className="rounded-full bg-white/20 text-white border border-white/25 hover:bg-white/30 px-6">
               Register
             </Button>
           </div>
 
-          {/* Mobile burger */}
           <button
             type="button"
             aria-label="Open menu"
@@ -123,11 +116,9 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile dropdown */}
         <AnimatePresence>
           {open && (
             <>
-              {/* Backdrop */}
               <motion.button
                 type="button"
                 aria-label="Close menu backdrop"
@@ -138,11 +129,10 @@ export default function Navbar() {
                 exit={{ opacity: 0 }}
               />
 
-              {/* Menu panel */}
               <motion.div
                 className="
                   md:hidden
-                  relative z-[60]
+                  relative z-60
                   mt-3
                   rounded-2xl
                   bg-[#0A1220]/75 backdrop-blur-xl

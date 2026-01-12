@@ -8,6 +8,8 @@ import {
   ArrowLeftRight,
   Loader2,
 } from "lucide-react"
+import Popular from "@/components/Popular"
+import CityDetails from "@/components/HeroBanner"
 
 const ICON_COLOR = "#32a3dbd8"
 
@@ -257,6 +259,8 @@ function HomeTop() {
           </motion.div>
         </motion.div>
       </motion.div>
+      <Popular/>
+      <CityDetails/>
     </section>
   )
 }
